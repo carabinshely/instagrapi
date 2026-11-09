@@ -20,6 +20,10 @@ on:
   schedule:
     - cron: '28 6 * * 5'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ (github.event_name == 'push' || github.event_name == 'pull_request') && github.ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   analyze:
     name: Analyze
