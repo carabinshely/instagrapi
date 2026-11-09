@@ -13,6 +13,9 @@ env:
 
 jobs:
   bandit:
+    concurrency:
+      group: ${{ github.workflow }}-job-bandit-${{ (github.event_name == 'push' || github.event_name == 'pull_request') && github.ref || github.run_id }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -29,6 +32,9 @@ jobs:
         run: bandit --ini .bandit -r instagrapi
 
   flake8:
+    concurrency:
+      group: ${{ github.workflow }}-job-flake8-${{ (github.event_name == 'push' || github.event_name == 'pull_request') && github.ref || github.run_id }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -48,6 +54,9 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --statistics
   isort:
+    concurrency:
+      group: ${{ github.workflow }}-job-isort-${{ (github.event_name == 'push' || github.event_name == 'pull_request') && github.ref || github.run_id }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -65,6 +74,9 @@ jobs:
         run: isort --check-only instagrapi
 
   test:
+    concurrency:
+      group: ${{ github.workflow }}-job-test-${{ (github.event_name == 'push' || github.event_name == 'pull_request') && github.ref || github.run_id }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -98,6 +110,9 @@ jobs:
         run: pytest -sv tests.py::ClientHighlightTestCase
 
   build-docs:
+    concurrency:
+      group: ${{ github.workflow }}-job-build-docs-${{ (github.event_name == 'push' || github.event_name == 'pull_request') && github.ref || github.run_id }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
